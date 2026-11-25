@@ -613,10 +613,9 @@ func (c *dangFuncCtx) dangSourcesMember() string {
 			dangString("/"+g.dir), strings.Join(args, ", ")))
 	}
 
-	// The module's own directory, read without .gitignore: a module may ignore
-	// the generated clients/ it cannot run without, and the engine's own overlay
-	// of these files is what the manifest check below reads.
-	calls = append(calls, `withDirectory(workspace.cwd, workspace.directory(".", exclude: ["**/.git", "**/node_modules"]))`)
+	// The module's own directory follows .gitignore like the outside paths, as
+	// the python, go and java SDKs read it, so an ignored file is not a source.
+	calls = append(calls, `withDirectory(workspace.cwd, workspace.directory(".", exclude: ["**/.git", "**/node_modules"], gitignore: true))`)
 
 	return fmt.Sprintf(`  """
   Everything this module builds from, as one directory.

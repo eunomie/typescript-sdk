@@ -252,7 +252,7 @@ func TestGenerateDangEntrypointSources(t *testing.T) {
 		require.Contains(t, got, strings.Join([]string{
 			`  pub sources(workspace: Workspace!): Directory! {`,
 			`    directory`,
-			`      .withDirectory(workspace.cwd, workspace.directory(".", exclude: ["**/.git", "**/node_modules"]))`,
+			`      .withDirectory(workspace.cwd, workspace.directory(".", exclude: ["**/.git", "**/node_modules"], gitignore: true))`,
 			`  }`,
 		}, "\n"))
 	}
@@ -274,14 +274,13 @@ func TestGenerateDangEntrypointSources(t *testing.T) {
 		`      .withDirectory(workspace.cwd + "/../other", workspace.directory("../other", `+
 			`include: ["x.ts"], exclude: ["**/.git", "**/node_modules"], gitignore: true))`)
 
-	// The module's own directory comes last, so it wins a collision — and is
-	// read without .gitignore, since a module may ignore the generated clients/
-	// it cannot run without.
+	// The module's own directory comes last, so it wins a collision, and follows
+	// .gitignore like the outside paths.
 	sources := got[strings.Index(got, "pub sources"):strings.Index(got, "pub types")]
 	require.Less(t,
 		strings.Index(sources, `workspace.directory("..",`),
 		strings.Index(sources, `workspace.directory(".",`))
-	require.NotContains(t, sources, `workspace.directory(".", exclude: ["**/.git", "**/node_modules"], gitignore: true)`)
+	require.Contains(t, sources, `workspace.directory(".", exclude: ["**/.git", "**/node_modules"], gitignore: true)`)
 }
 
 // TestGenerateDangEntrypointSourcesInstall pins the install context. A file:

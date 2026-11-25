@@ -473,7 +473,7 @@ type GenerateChecks {
     # and a call with no workspace argument.
     Asserts.stringContains(
       recipe,
-      "pub sources(workspace: Workspace!): Directory! {\n    directory\n      .withDirectory(workspace.cwd, workspace.directory(\".\", exclude: [\"**/.git\", \"**/node_modules\"]))\n  }",
+      "pub sources(workspace: Workspace!): Directory! {\n    directory\n      .withDirectory(workspace.cwd, workspace.directory(\".\", exclude: [\"**/.git\", \"**/node_modules\"], gitignore: true))\n  }",
       "a module declaring nothing should still return its own directory",
     )
     Asserts.stringContains(

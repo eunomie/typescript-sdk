@@ -19,7 +19,7 @@ type Entrypoint implements ModuleEntrypoint {
   """
   pub sources(workspace: Workspace!): Directory! {
     directory
-      .withDirectory(workspace.cwd, workspace.directory(".", exclude: ["**/.git", "**/node_modules"]))
+      .withDirectory(workspace.cwd, workspace.directory(".", exclude: ["**/.git", "**/node_modules"], gitignore: true))
   }
 
   """
